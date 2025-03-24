@@ -58,7 +58,9 @@ describe('formgen', () => {
       const testCases = [
         ['Hello-World!', 'HelloWorld'],
         ['Form_1040(2023)', 'Form10402023'],
-        ['123.45', '12345']
+        ['123.45', '12345'],
+        // Rename class "f1040" to match the regular expression ^[A-Z][a-zA-Z0-9]*$.sonarqube(typescript:S101)
+        ['f1040', 'F1040']
       ] as const
 
       testCases.forEach(([input, expected]) => {

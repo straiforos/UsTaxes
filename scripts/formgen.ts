@@ -9,8 +9,10 @@ export const loadFile = async (path: string): Promise<PDFDocument> => {
   return await PDFDocument.load(bytearray)
 }
 
-export const normalizeName = (name: string): string =>
-  name.replace(/[^a-zA-Z0-9]/g, '')
+export const normalizeName = (name: string): string => {
+  const cleaned = name.replace(/[^a-zA-Z0-9]/g, '')
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+}
 
 export const fieldFunction = (
   field: PDFField,
