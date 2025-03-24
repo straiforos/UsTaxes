@@ -3,16 +3,19 @@ import { readFile } from 'fs/promises'
 import * as path from 'path'
 import _ from 'lodash'
 
-const loadFile = async (path: string): Promise<PDFDocument> => {
+export const loadFile = async (path: string): Promise<PDFDocument> => {
   const file = await readFile(path)
   const bytearray = file.slice(0, file.byteLength)
   return await PDFDocument.load(bytearray)
 }
 
-const normalizeName = (name: string): string =>
+export const normalizeName = (name: string): string =>
   name.replace(/[^a-zA-Z0-9]/g, '')
 
-const fieldFunction = (field: PDFField, index: number): [string, string] => {
+export const fieldFunction = (
+  field: PDFField,
+  index: number
+): [string, string] => {
   const name = normalizeName(field.getName())
   const isNumeric = name.match(/^[0-9]+[a-z]*$/)
   const functionName = isNumeric ? `l${name}` : `f${index}`
@@ -63,7 +66,7 @@ const fieldFunction = (field: PDFField, index: number): [string, string] => {
   return [code, functionName]
 }
 
-const buildSource = (doc: PDFDocument, formName: string): string => {
+export const buildSource = (doc: PDFDocument, formName: string): string => {
   const functions = doc.getForm().getFields().map(fieldFunction)
   const [impls, functionNames] = _.unzip(functions)
   const className = normalizeName(formName)
@@ -103,7 +106,7 @@ export default make${className}
 `
 }
 
-const generate = async (
+export const generate = async (
   inFile: string,
   outFile: string | undefined = undefined
 ): Promise<void> => {
