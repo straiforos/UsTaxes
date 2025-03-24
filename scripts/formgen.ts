@@ -68,11 +68,11 @@ const buildSource = (doc: PDFDocument, formName: string): string => {
   const [impls, functionNames] = _.unzip(functions)
   const className = normalizeName(formName)
 
-  return `import Form from '../Form'
-import F1040 from '../../irsForms/F1040'
-import { Field } from '../../pdfFiller'
-import { displayNumber, sumFields } from '../../irsForms/util'
-import { AccountType, FilingStatus, State } from '../../redux/data'
+  return `import Form from '@core/irsForms/Form'
+import F1040 from '@core/irsForms/F1040'
+import { Field } from '@core/pdfFiller'
+import { displayNumber, sumFields } from '@core/irsForms/util'
+import { AccountType, FilingStatus, State } from '@core/data'
 import { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 
 export class ${className} extends Form {
@@ -82,6 +82,7 @@ export class ${className} extends Form {
   state: State
 
   constructor(f1040: F1040) {
+    super()
     this.info = f1040.info
     this.f1040 = f1040
     this.formName = '${formName}'
@@ -90,14 +91,8 @@ export class ${className} extends Form {
 
 ${impls.join('\n')}
 
-  const fields = (): Field[] => ([
-${functionNames
-  .map((name) =>
-    name.startsWith('l')
-      ? `    displayNumber(this.${name}())`
-      : `    this.${name}()`
-  )
-  .join(',\n')}
+  fields = (): Field[] => ([
+    ${functionNames.map((name) => `[${name}, this.${name}]`).join(',\n    ')}
   ])
 }
 
@@ -127,7 +122,7 @@ const help = () => {
   `)
 }
 
-const main = () => {
+const main = async () => {
   const args = process.argv.slice(2)
   process.argv.forEach((a) => console.log(a))
 
@@ -136,9 +131,9 @@ const main = () => {
     process.exit()
   }
 
-  generate(args[0])
+  await generate(args[0])
 }
 
 if (require.main === module) {
-  main()
+  void main()
 }

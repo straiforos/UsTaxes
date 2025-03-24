@@ -2,7 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "ustaxes/*": ["src/*"]
+      "ustaxes/*": ["src/*"],
+      "@core/*": ["src/core/*"],
+      "@core/irsForms/*": ["src/core/irsForms/*"],
+      "@core/pdfFiller": ["src/core/pdfFiller"],
+      "@core/data": ["src/core/data"]
     }
   }
 }
